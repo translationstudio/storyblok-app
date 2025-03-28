@@ -1,0 +1,35 @@
+{
+  "name": "translationstudio-storyblok",
+  "author": {
+    "name": "I-D Media GmbH",
+    "url": "https://translationstudio.tech"
+  },
+  "homepage": "https://translationstudio.tech",
+  "version": "1.0.0",
+  "license": "GPL-2.0-only",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.15.15",
+    "@mui/material": "^5.15.15",
+    "@mui/x-date-pickers": "^7.0.0",
+    "@storyblok/app-extension-auth": "1.0.2",
+    "@storyblok/mui": "^0.2.0",
+    "dayjs": "^1.11.10",
+    "next": "^14.2.15",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "5.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "20.5.9",
+    "@types/react": "18.2.21",
+    "@types/react-dom": "18.2.7"
+  }
+}
