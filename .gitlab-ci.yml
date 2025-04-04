@@ -19,4 +19,4 @@ upload-sbom:
    before_script:
       - !reference [.upload_sbom, before_script]
    only:
-      - master
+      - main
