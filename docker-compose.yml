@@ -1,0 +1,30 @@
+services:
+  cmsibexa:
+    env_file: .env
+    build: 
+      context: .
+      args:
+        UID: ${SERVICE_USERANDGROUP_ID}
+        GID: ${SERVICE_USERANDGROUP_ID}
+        USERNAME: ${SERVICE_USERANDGROUP_NAME}
+        GROUPNAME: ${SERVICE_USERANDGROUP_NAME}
+    image: registry-git2.intentive.de/i-d-media/translationstudio-saas/saas/${SERVICE_REPO_DIRECTORY}:${BUILD_TAG}
+    volumes:
+      - ./log:/app/log
+      - ./data:/app/data 
+    ports:
+      - "8081:8010"
+    environment:
+      PORT: 8081
+      CMS_MIDDLEWARE_URL: ${CMS_MIDDLEWARE_URL}
+      ACCOUNT_KEY: ${API_KEY}
+      CMS_MIDDLEWARE_KEY: ${API_KEY}
+      APPLICATION_KEY: ${API_KEY}
+      CONFIGURATIONDATABASE_KEY: ${API_KEY}
+      TRANSLATIONREQUEST_KEY: ${API_KEY}
+      EXTENSION_URL: ${EXTENSION_URL}
+      EXTENSION_APP_ID: ${EXTENSION_APP_ID}
+      EXTENSION_CLIENT_ID: ${EXTENSION_CLIENT_ID}
+      EXTENSION_CLIENT_SECRET: ${EXTENSION_CLIENT_SECRET}
+      EXTENSION_SLUG: ${EXTENSION_SLUG}
+      TRANSLATIONSTUDIO_URL: ${TRANSLATIONSTUDIO_URL}

@@ -1,10 +1,14 @@
-stages: 
+stages:
   - pre-build
+  - build
 
 include: 
 - project: 'D00000-Toolbox/ci_cd-templates/node-js-project'
   ref: release/node-20
   file: 'dependency-track.yml'
+- project: 'i-d-media/translationstudio-saas/ci-cd-setup'
+  ref: main
+  file: 'docker-deployment.yml'
 
 variables:
    GIT_SSL_NO_VERIFY: "true"
@@ -18,5 +22,17 @@ upload-sbom:
       - sonarqube
    before_script:
       - !reference [.upload_sbom, before_script]
+   only:
+      - main
+      
+ts-build-dev:
+   extends: .ts-build-dev
+   stage: build
+   only:
+      - develop
+
+ts-build-main:
+   extends: .ts-build-main
+   stage: build
    only:
       - main
