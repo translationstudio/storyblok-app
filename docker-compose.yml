@@ -8,7 +8,8 @@ services:
         GID: ${SERVICE_USERANDGROUP_ID}
         USERNAME: ${SERVICE_USERANDGROUP_NAME}
         GROUPNAME: ${SERVICE_USERANDGROUP_NAME}
-    image: registry-git2.intentive.de/i-d-media/translationstudio-saas/saas/${SERVICE_REPO_DIRECTORY}:${BUILD_TAG}
+        SERVICE_REPO_GROUP: ${SERVICE_REPO_GROUP}
+    image: registry-git2.intentive.de/i-d-media/translationstudio-saas/${SERVICE_REPO_GROUP}/${SERVICE_REPO_DIRECTORY}:${BUILD_TAG}
     volumes:
       - ./log:/app/log
       - ./data:/app/data 
