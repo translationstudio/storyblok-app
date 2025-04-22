@@ -31,6 +31,12 @@ ts-build-dev:
    only:
       - develop
 
+ts-build-qa:
+   extends: .ts-build-qa
+   stage: build
+   only:
+      - qa
+
 ts-build-main:
    extends: .ts-build-main
    stage: build
