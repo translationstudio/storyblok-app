@@ -13,8 +13,10 @@ services:
     volumes:
       - ./log:/app/log
       - ./data:/app/data 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
-      - "8081:8010"
+      - "8016:8081"
     environment:
       PORT: 8081
       EXTENSION_URL: ${EXTENSION_URL}

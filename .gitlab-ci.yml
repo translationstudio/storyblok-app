@@ -1,6 +1,7 @@
 stages:
-  - pre-build
-  - build
+   - pre-build
+   - build
+   - deploy
 
 include: 
 - project: 'D00000-Toolbox/ci_cd-templates/node-js-project'
@@ -28,6 +29,13 @@ upload-sbom:
 ts-build-dev:
    extends: .ts-build-dev
    stage: build
+   only:
+      - develop
+
+ts-deploy-dev:
+   extends: .ts-deploy-dev
+   needs: [ "ts-build-dev" ]
+   stage: deploy
    only:
       - develop
 
