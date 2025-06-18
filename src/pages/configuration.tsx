@@ -31,7 +31,7 @@ import { useAutoHeight } from '@/hooks';
 
 import { NotifyMessage as NotifyMessageType } from '@/interfaces_types';
 import { requestCMSData } from '@/utils/storyblok'
-import { NotifyMessage, Loader } from "@/components/"
+import { NotifyMessage, Loader } from "@/components"
 
 import  {Button, Box, LinearProgress, TextField, Typography }  from '@mui/material'
 import { ChevronBackIcon } from "@storyblok/mui";

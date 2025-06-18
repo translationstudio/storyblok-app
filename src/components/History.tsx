@@ -17,7 +17,7 @@ along with this program; if not, see https://www.gnu.org/licenses/old-licenses/g
 */
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { History as HistoryType } from "@/interfaces_types/";
+import { History as HistoryType } from "@/interfaces_types";
 import { Box, Typography }  from '@mui/material'
 
 type HistoryProps = {

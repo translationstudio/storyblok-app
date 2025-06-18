@@ -24,7 +24,7 @@ import { useAutoHeight, useToolContext } from '@/hooks';
 
 import { HomeProps, Languages, NotifyMessage as NotifyMessageType, TranslationRequest, Translations } from '@/interfaces_types';
 
-import { LanguageTargetCheckboxes, History, DueDatePicker, Loader, UrgentCheckbox, NotifyMessage } from "@/components/"
+import { LanguageTargetCheckboxes, History, DueDatePicker, Loader, UrgentCheckbox, NotifyMessage } from "@/components"
 
 import  {Button, Box, Typography }  from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings';
