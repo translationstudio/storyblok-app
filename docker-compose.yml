@@ -1,5 +1,5 @@
 services:
-  storyblokappui:
+  storyblokappuibase:
     env_file: .env
     build: 
       context: .
@@ -16,7 +16,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
-      - "8016:8081"
+      - "${SERVER_IP}:8016:8081"
     environment:
       PORT: 8081
       EXTENSION_URL: ${EXTENSION_URL}
@@ -25,3 +25,8 @@ services:
       EXTENSION_CLIENT_SECRET: ${EXTENSION_CLIENT_SECRET}
       EXTENSION_SLUG: ${EXTENSION_SLUG}
       TRANSLATIONSTUDIO_URL: ${TRANSLATIONSTUDIO_URL}
+
+networks:
+  saas-prod:
+  saas-qa:
+  saas-dev:

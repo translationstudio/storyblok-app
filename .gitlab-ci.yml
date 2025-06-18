@@ -38,10 +38,17 @@ ts-deploy-dev:
    stage: deploy
    only:
       - develop
-
+      
 ts-build-qa:
    extends: .ts-build-qa
    stage: build
+   only:
+      - qa
+
+ts-deploy-qa:
+   extends: .ts-deploy-qa
+   needs: [ "ts-build-qa" ]
+   stage: deploy
    only:
       - qa
 
@@ -50,3 +57,11 @@ ts-build-main:
    stage: build
    only:
       - main
+
+ts-deploy-main:
+   extends: .ts-deploy-main
+   needs: [ "ts-build-main" ]
+   stage: deploy
+   only:
+      - main
+
