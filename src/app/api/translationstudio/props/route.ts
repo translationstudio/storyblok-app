@@ -24,9 +24,9 @@ export async function GET()
 {
     try
     {
-        const headersList = headers()
+        const headersList = await headers()
         const spaceid = headersList.get('X-spaceid') ?? "";
-        const spaceToken = GetSpaceAccessToen(spaceid);
+        const spaceToken = await GetSpaceAccessToen(spaceid);
         if (!spaceToken)
             return NextResponse.json({ message: "cannot obtain space token"}, { status: 400 }); 
 
@@ -53,13 +53,13 @@ export async function GET()
 export async function POST(req:Request)
 {
     try{
-        const headersList = headers()
+        const headersList = await headers()
         const spaceid = headersList.get('X-spaceid') ?? "";
 
-        const cookieStore = cookies()
+        const cookieStore = await cookies()
         const oauthToken = cookieStore.get("auth")?.value ?? "";
         
-        const spaceToken = GetSpaceAccessToen(spaceid);
+        const spaceToken = await GetSpaceAccessToen(spaceid);
         if (!spaceToken)
             return NextResponse.json({ message: "cannot obtain space token"}, { status: 400 }); 
 

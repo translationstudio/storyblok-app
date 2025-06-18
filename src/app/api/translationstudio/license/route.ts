@@ -23,7 +23,7 @@ export async function GET()
 {
     try
     {
-        const headersList = headers();
+        const headersList = await headers();
         const license = headersList.get("X-license") ?? "";
 
         if (!license)

@@ -60,9 +60,9 @@ export async function POST(req:Request)
 {
     try
     {
-        const headersList = headers()
+        const headersList = await headers()
         const spaceid = headersList.get('X-spaceid') ?? "";
-        const spaceToken = GetSpaceAccessToen(spaceid);
+        const spaceToken = await GetSpaceAccessToen(spaceid);
         if (!spaceToken)
             return NextResponse.json({ message: "cannot obtain space token"}, { status: 400 }); 
 

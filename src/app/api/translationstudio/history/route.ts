@@ -28,9 +28,9 @@ export async function GET(request: NextRequest)
         if (typeof elementuid !== "string" || elementuid === "")
             return NextResponse.json({ message: "Invalid element"}, { status: 400 }); 
 
-        const headersList = headers()
+        const headersList = await headers()
         const spaceid = headersList.get('X-spaceid') ?? "";
-        const spaceToken = GetSpaceAccessToen(spaceid);
+        const spaceToken = await GetSpaceAccessToen(spaceid);
 
         if (!spaceToken)
             return NextResponse.json({ message: "cannot obtain space token"}, { status: 400 }); 

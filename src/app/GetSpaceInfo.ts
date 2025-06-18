@@ -49,9 +49,9 @@ export async function GetSpaceInfo(oauthToken:string)
     }
 }
 
-export function GetSpaceAccessToen(spaceid:string) : string
+export async function GetSpaceAccessToen(spaceid:string) : Promise<string>
 {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const oauthToken = cookieStore.get("auth")?.value ?? "";
     if (!oauthToken)
     {

@@ -22,10 +22,10 @@
     "@storyblok/app-extension-auth": "1.0.2",
     "@storyblok/mui": "^0.2.0",
     "dayjs": "^1.11.10",
-    "next": "^14.2.15",
+    "next": "15.3.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.2.2"
+    "typescript": "5.8.3"
   },
   "devDependencies": {
     "@types/node": "20.5.9",
