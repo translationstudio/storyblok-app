@@ -1,19 +1,13 @@
-#FROM openjdk:17-alpine
 
-# syntax=docker/dockerfile:1
-
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22.16.0
 
 FROM node:${NODE_VERSION}-alpine
 
-# Use production node environment by default.
-ENV NODE_ENV=production
+ARG UID
+ARG GID
+ARG USERNAME
+ARG GROUPNAME
+RUN addgroup --gid ${GID} ${GROUPNAME} && adduser -D -u "${UID}" -G "${GROUPNAME}" "${USERNAME}"
 
 WORKDIR /app
 
@@ -23,7 +17,7 @@ RUN mkdir -p /app/log && \
 #
 # Install typescript into the container
 #
-#RUN npm install typescript -g
+RUN npm install typescript -g
 
 #
 # Copy the source files into the image.
@@ -47,6 +41,9 @@ RUN npm run build
 RUN npm prune --production
 
 RUN chown -R ${USERNAME}:${GROUPNAME} /app && chmod -R 755 /app
+
+# Use production node environment by default.
+ENV NODE_ENV=production
 
 #
 # Run the application as NON-ROOT user
