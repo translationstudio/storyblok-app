@@ -23,7 +23,7 @@ RUN mkdir -p /app/log && \
 #
 # Install typescript into the container
 #
-RUN npm install typescript -g
+#RUN npm install typescript -g
 
 #
 # Copy the source files into the image.
