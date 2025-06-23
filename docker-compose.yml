@@ -28,5 +28,11 @@ services:
 
 networks:
   saas-prod:
+    name: saas-prod
+    external: true
   saas-qa:
+    name: saas-qa
+    external: true
   saas-dev:
+    name: saas-dev
+    external: true
