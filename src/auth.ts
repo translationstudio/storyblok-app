@@ -23,8 +23,8 @@ import StoryblokAppConfigration from './StoryblokAppConfiguration';
     const vars = [
         "TRANSLATIONSTUDIO_URL", 
         'EXTENSION_URL', 
-        'EXTENSION_SLUG', 
-        'EXTENSION_APP_ID',
+        'NEXT_PUBLIC_EXTENSION_SLUG', 
+        'NEXT_PUBLIC_EXTENSION_APP_ID',
         'EXTENSION_CLIENT_ID', 
         'EXTENSION_CLIENT_SECRET'
     ];

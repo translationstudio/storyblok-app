@@ -15,6 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
+import Logger from "@/utils/Logger";
 import { cookies } from "next/headers";
 
 export async function GetSpaceInfo(oauthToken:string)
@@ -33,7 +34,11 @@ export async function GetSpaceInfo(oauthToken:string)
 
     if (!response.ok)
     {
-        console.warn("Cannot get space data");
+        const json = await response.json();
+        if (json.error)
+            console.warn("Cannot get space data: " + json.error);
+        else
+            console.warn("Cannot get space data");
         return null;
     }
 
@@ -90,4 +95,53 @@ export async function GetSpaceAccessToen(spaceid:string) : Promise<string>
     }
 
     return "";
+}
+
+
+export async function GetSpaceAccessToens(spaceid:string) : Promise<string[]>
+{
+    const cookieStore = await cookies()
+    const oauthToken = cookieStore.get("auth")?.value ?? "";
+    if (!oauthToken)
+    {
+        console.warn("Cannot get auth from cookie");
+        return [];
+    }
+       
+    try
+    {
+        if (!spaceid)
+            return [];
+
+        const parts = oauthToken.split(".");
+        if (parts.length !== 3)
+            return [];
+    
+        const data = Buffer.from(parts[1], "base64").toString("utf-8");
+        if (!data)
+            return [];
+
+        const json = JSON.parse(data)
+        if (!json.data?.sessions || !Array.isArray(json.data.sessions) || json.data.sessions.length === 0)
+            return [];
+
+        const list:any = { };
+        for (let el of json.data.sessions)
+        {
+            if (el.spaceId + "" === spaceid && el.accessToken)
+                list[el.accessToken] = true;
+        }
+
+        const keys = Object.keys(list);
+        if (keys.length > 0)
+            return keys;
+
+        throw new Error("Cannot find access token");
+    }
+    catch (err:any)
+    {
+        Logger.error(err.message ?? err)
+    }
+
+    return [];
 }

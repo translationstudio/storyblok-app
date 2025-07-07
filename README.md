@@ -21,10 +21,10 @@ You will need to host an instance of this plugin in order to add it to Storyblok
 Setup the file `.env` and add the environmental variables (they will be made available during the Storyblok extension creation, see below):
 
 - `EXTENSION_URL`: The URL of this application, e.g. `https://storyblokapp.mycompany.com`
-- `EXTENSION_APP_ID`: The app id of your extension
+- `NEXT_PUBLIC_EXTENSION_APP_ID`: The app id of your extension
 - `EXTENSION_CLIENT_ID`: OAuth client id
 - `EXTENSION_CLIENT_SECRET`: OAuth client secret
-- `EXTENSION_SLUG`: The Storyblok extension's slug
+- `NEXT_PUBLIC_EXTENSION_SLUG`: The Storyblok extension's slug
 
 Once configured, you can start the application using
 
@@ -40,7 +40,7 @@ or deploy it to the platform provider of your choice.
 1. Open [Storyblok's Partner Portal Extension View](https://app.storyblok.com/#/partner/apps)
 2. Click On **New Extension**
 3. Fill in the fields `name` and `slug`.
-4. Select `Sidebar` as extension type
+4. Select `Toolbar` as extension type
 5. Click on **Save**
 
 Once the extension has been created, a new entry will appear inside the extension list. Open it and navigate to the `OAuth 2.0 and Pages` tab.
