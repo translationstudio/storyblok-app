@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 import StoryblokAppConfigration from "@/StoryblokAppConfiguration";
+import Logger from "@/utils/Logger";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -41,7 +42,7 @@ export async function GET()
     }
     catch (err:any)
     {
-        console.warn(err.message ?? err);
+        Logger.warn(err.message ?? err);
     }
 
     return NextResponse.json({ message: "cannot validate license"}, { status: 500 });

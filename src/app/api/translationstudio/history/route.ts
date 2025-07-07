@@ -18,6 +18,7 @@ along with this program; if not, see https://www.gnu.org/licenses/old-licenses/g
 import GetAppInformation from "@/app/GetAppInformation";
 import { GetSpaceAccessToen, GetSpaceInfo } from "@/app/GetSpaceInfo";
 import StoryblokAppConfigration from "@/StoryblokAppConfiguration";
+import Logger from "@/utils/Logger";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -65,7 +66,7 @@ export async function GET(request: NextRequest)
     }
     catch (err:any)
     {
-        console.warn(err.message ?? err);
+        Logger.warn(err.message ?? err);
     }
     
     return NextResponse.json({ message: "Could not fetc history"}, { status: 500 });

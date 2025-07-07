@@ -21,6 +21,7 @@ import StoryblokAppConfigration from "@/StoryblokAppConfiguration";
 import { TranslationRequest, Translations } from "@/interfaces_types/translationstudio";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import Logger from "@/utils/Logger";
 
 type TranslationRequestTranslations = {
 	"source": string,
@@ -107,7 +108,7 @@ export async function POST(req:Request)
     }
     catch (err:any)
     {
-        console.warn("Cannot obtain ts license",err.message ?? err);
+        Logger.warn("Cannot obtain ts license",err.message ?? err);
     }
 
     return NextResponse.json({ message: "Cannot submit translation request"}, { status: 500 });

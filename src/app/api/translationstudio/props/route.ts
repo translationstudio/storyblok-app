@@ -17,6 +17,7 @@ along with this program; if not, see https://www.gnu.org/licenses/old-licenses/g
 */
 import GetAppInformation, { GetAppId } from '@/app/GetAppInformation';
 import { GetSpaceAccessToen, GetSpaceInfo } from '@/app/GetSpaceInfo';
+import Logger from '@/utils/Logger';
 import { cookies, headers } from 'next/headers'
 import { NextResponse } from 'next/server';
 
@@ -43,7 +44,7 @@ export async function GET()
     }
     catch (err:any)
     {
-        console.warn("Cannot obtain ts license",err.message ?? err);
+        Logger.warn("Cannot obtain ts license",err.message ?? err);
     }
 
     return NextResponse.json({ message: "Cannot get configuration data"}, { status: 500 });
@@ -101,7 +102,7 @@ export async function POST(req:Request)
     }
     catch (err:any)
     {
-        console.error("Could not save configuration. ", err.message ?? err);
+        Logger.error("Could not save configuration. ", err.message ?? err);
     }
 
     return NextResponse.json({ message: "cannot get data"}, { status: 500 });
