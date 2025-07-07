@@ -65,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		};	
 	}
 	catch (err) {
-		console.error("Could not initiate serverSideProps. Possible wrong/missing CMS configuration");
+		console.warn("Could not initiate serverSideProps. Possible wrong/missing CMS configuration");
         console.error(err);	
 		
 		// let´s redirect to configuration page
