@@ -21,6 +21,7 @@ import StoryblokAppConfigration from "@/StoryblokAppConfiguration";
 import Logger from "@/utils/Logger";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { History as HistoryType } from "@/interfaces_types";
 
 export async function GET(request: NextRequest)
 {
@@ -44,25 +45,24 @@ export async function GET(request: NextRequest)
         if (appInfo === null || !appInfo.license)
             return NextResponse.json({ message: "cannot obtain license"}, { status: 400 }); 
        
-        const res = await fetch(StoryblokAppConfigration.URL + "/translationstudio/history/element", {
-            method: "POST",
+        const res = await fetch(StoryblokAppConfigration.URL + "/translationstudio/history/" + spaceid + "/uuid/" + elementuid, {
+            method: "GET",
             headers: {
                 "X-license": appInfo.license,
-                "X-element": elementuid
             }
         });
 
         if (res.status === 404)
             return NextResponse.json([]);
 
-        if (res.ok)
-            return NextResponse.json(await res.json());
-
         if (!res.ok)
         {
             const json = await res.json();
             throw new Error(json.message ?? "Could not fetch history");
         }
+
+        const json:HistoryType[] = await res.json();
+        return NextResponse.json(json);
     }
     catch (err:any)
     {
