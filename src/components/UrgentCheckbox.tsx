@@ -29,7 +29,7 @@ const UrgentCheckbox = ({handleUrgentChange, urgent, isMachineTranslation}:Urgen
     if (isMachineTranslation)
         return <></>;
 
-    return <Box sx={{ pb:4, pl: 1 }}>
+    return <Box sx={{ pl: 1 }}>
         <FormControlLabel 
             control={<Checkbox onChange={handleUrgentChange} 
             checked={urgent} 
