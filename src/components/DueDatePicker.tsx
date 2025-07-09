@@ -47,7 +47,7 @@ const DueDatePicker = ({handleDueDateChange, dueDate, isMachineTranslation}:DueD
 
     return <Box component="section" sx={{ pb:4 }}>						
         <FormControl>															
-            <FormLabel id="translation-date-label">Translation due date</FormLabel>
+            <FormLabel id="translation-date-label" className="translation-caption">Translation due date (optional)</FormLabel>
             <DatePicker 							
                 value={dayjs.unix(Number(dueDate))}
                 onChange={handleDueDateChange} 
