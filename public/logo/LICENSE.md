@@ -1,0 +1,1 @@
+This folder contains images that are not included in the GPL license. You may use these images only for the purpose of running this app. You may not modify, distribute or otherwise use the images.
