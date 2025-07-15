@@ -18,8 +18,10 @@ along with this program; if not, see https://www.gnu.org/licenses/old-licenses/g
 import GetAppInformation from "@/app/GetAppInformation";
 import { GetSpaceAccessToen, GetSpaceInfo } from "@/app/GetSpaceInfo";
 import StoryblokAppConfigration from "@/StoryblokAppConfiguration";
+import Logger from "@/utils/Logger";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { History as HistoryType } from "@/interfaces_types";
 
 export async function GET(request: NextRequest)
 {
@@ -28,9 +30,9 @@ export async function GET(request: NextRequest)
         if (typeof elementuid !== "string" || elementuid === "")
             return NextResponse.json({ message: "Invalid element"}, { status: 400 }); 
 
-        const headersList = headers()
+        const headersList = await headers()
         const spaceid = headersList.get('X-spaceid') ?? "";
-        const spaceToken = GetSpaceAccessToen(spaceid);
+        const spaceToken = await GetSpaceAccessToen(spaceid);
 
         if (!spaceToken)
             return NextResponse.json({ message: "cannot obtain space token"}, { status: 400 }); 
@@ -43,29 +45,28 @@ export async function GET(request: NextRequest)
         if (appInfo === null || !appInfo.license)
             return NextResponse.json({ message: "cannot obtain license"}, { status: 400 }); 
        
-        const res = await fetch(StoryblokAppConfigration.URL + "/translationstudio/history/element", {
-            method: "POST",
+        const res = await fetch(StoryblokAppConfigration.URL + "/translationstudio/history/" + spaceid + "/uuid/" + elementuid, {
+            method: "GET",
             headers: {
                 "X-license": appInfo.license,
-                "X-element": elementuid
             }
         });
 
         if (res.status === 404)
             return NextResponse.json([]);
 
-        if (res.ok)
-            return NextResponse.json(await res.json());
-
         if (!res.ok)
         {
             const json = await res.json();
             throw new Error(json.message ?? "Could not fetch history");
         }
+
+        const json:HistoryType[] = await res.json();
+        return NextResponse.json(json);
     }
     catch (err:any)
     {
-        console.warn(err.message ?? err);
+        Logger.warn(err.message ?? err);
     }
     
     return NextResponse.json({ message: "Could not fetc history"}, { status: 500 });

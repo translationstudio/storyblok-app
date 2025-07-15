@@ -33,7 +33,6 @@ const LanguageTargetCheckboxes = ({ handleTargetChange, tsLanguageMappings, targ
 
     return <Box component="section" sx={{ pb: 4 }}>
         <FormControl>
-            <FormLabel id="checkbox-buttons-target-language-group-label">Translation settings</FormLabel>
             <Box sx={{ pl: 1 }}>
                 <FormGroup>
                     {tsLanguageMappings.map((item, idx) => <FormControlLabel 

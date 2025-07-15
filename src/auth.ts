@@ -21,7 +21,6 @@ import StoryblokAppConfigration from './StoryblokAppConfiguration';
 
 (function(){ 
     const vars = [
-        "TRANSLATIONSTUDIO_URL", 
         'EXTENSION_URL', 
         'NEXT_PUBLIC_EXTENSION_SLUG', 
         'NEXT_PUBLIC_EXTENSION_APP_ID',

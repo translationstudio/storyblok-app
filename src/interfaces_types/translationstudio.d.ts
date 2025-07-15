@@ -50,12 +50,12 @@ export interface TranslationRequest {
 }
 
 export interface History {
-	element: string;
-	type: number;
-	"source-language": string;
-	"target-language": string;
-	"time-insert": number;
-	"time-export": number;
 	"time-intranslation": number;
-	"time-translated": number;
+	"project-name": string;
+	"time-imported": number;
+	"element-uid": string;
+	"target-language": string;
+	"time-updated": number;
+	"element-name": string;
+	"time-requested": number;
 }

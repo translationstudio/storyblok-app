@@ -24,11 +24,12 @@ import { useAutoHeight, useToolContext } from '@/hooks';
 
 import { HomeProps, Languages, NotifyMessage as NotifyMessageType, TranslationRequest, Translations } from '@/interfaces_types';
 
-import { LanguageTargetCheckboxes, History, DueDatePicker, Loader, UrgentCheckbox, NotifyMessage } from "@/components/"
+import { LanguageTargetCheckboxes, History, DueDatePicker, Loader, UrgentCheckbox, NotifyMessage } from "@/components"
 
-import  {Button, Box, Typography }  from '@mui/material'
+import  {Button, Box, Typography, Checkbox, FormControlLabel }  from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings';
 import dayjs from 'dayjs';
+import { SendRounded } from '@mui/icons-material';
 
 type LanguageMap = {
 	[id:string]:Languages
@@ -85,6 +86,7 @@ const Home = (props: HomeProps) => {
 	const [dueDate, setDueDate] = useState<number|undefined>();
 	const [enableSubmit, setEnableSubmit] = useState(false);
 	const [notifyMessage, setNotifyMessage] = useState<NotifyMessageType|null>(null);
+	const [receiveEmails, setReceiveEmails] = useState(typeof props.userInfo?.email === "string" && props.userInfo.email !== "");
 
 	const [loader, setLoader] = useState(false);
 
@@ -164,7 +166,7 @@ const Home = (props: HomeProps) => {
 			spaceid: spaceId,
 			urgent: urgent,
 			duedate: dueDate ?? 0,
-			notifyUser: ignoreNonAISettings === false,
+			notifyUser: ignoreNonAISettings === false && receiveEmails,
 			translations: getTranslations(targetLanguageChecked, connectorMap)
 		};
 
@@ -198,6 +200,13 @@ const Home = (props: HomeProps) => {
 		</main>
 	}
 
+	if (props.tsLanguageMappings.length === 0)
+	{
+		return <main>
+			<NotifyMessage notifyMessage={{ message: "translationstudio has not been setup yet.", type: "warning"}} />
+		</main>
+	}
+
 	return (
 		<>			
 			<Head>
@@ -208,48 +217,41 @@ const Home = (props: HomeProps) => {
 				<Box component="section" sx={{ }}>
 					<Box sx={{ pb:2 }}>							
 						<SettingsIcon onClick={() => { handleSettings(); }} sx={{position:'absolute', right: '5px', cursor: 'pointer'}}/>
-						{entryTitle && 	props.tsLanguageMappings.length > 0 ?
-							<>
-								<Typography sx={{ }} variant="body1" gutterBottom>
-									Translate <b>{entryTitle}</b>
-								</Typography>
-							</>
-							:
-							<Typography sx={{ }} variant="body1" gutterBottom>&nbsp;</Typography>
-						}
+						<Typography sx={{ }} variant="body1" gutterBottom>Translate {entryTitle ? <b>{entryTitle}</b> : <></>} using</Typography>
 					</Box>						
 
-					{props.tsLanguageMappings.length === 0 && (<NotifyMessage notifyMessage={{
-						type: 'warning',
-						withIcon: true,
-						message: "translationstudio has not yet been configured."
-					}} />)}
+					<LanguageTargetCheckboxes handleTargetChange={handleTargetChange} 
+						tsLanguageMappings={props.tsLanguageMappings}  
+						targetLanguageChecked={targetLanguageChecked} 
+					/>
 					
-					{props.tsLanguageMappings.length > 0 && (<>
-						{!notifyMessage && (<>
-							<LanguageTargetCheckboxes handleTargetChange={handleTargetChange} 
-								tsLanguageMappings={props.tsLanguageMappings}  
-								targetLanguageChecked={targetLanguageChecked} 
-							/>
-							{!ignoreNonAISettings && (<>
-								<DueDatePicker handleDueDateChange={handleDueDateChange} isMachineTranslation={false} dueDate={dueDate} />
-								<UrgentCheckbox handleUrgentChange={handleUrgentChange} isMachineTranslation={false} urgent={urgent} />
-							</>)}
-						</>)}
-						<Box sx={{ pb:4 }}>
-							{!notifyMessage && (
-								<Button disabled={!enableSubmit} onClick={() => handleSubmit()} type="button" variant="contained" size="small" sx={{mt:2, mr:5}}>Translate</Button> 															
-							)}
-							{notifyMessage && (<>
-								<NotifyMessage notifyMessage={notifyMessage}/>								
-								<Box sx={{display:"flex", justifyContent:"center", pr:2}}>
-									<Button onClick={() => handleResetForm()} type="button" variant="contained" size="small" sx={{mt:2}}>Start new translation request</Button> 
-								</Box>
-							</>)}
-						</Box>
+					{!ignoreNonAISettings && (<>
+						<DueDatePicker handleDueDateChange={handleDueDateChange} isMachineTranslation={false} dueDate={dueDate} />
+						<UrgentCheckbox handleUrgentChange={handleUrgentChange} isMachineTranslation={false} urgent={urgent} />
+						{props.userInfo?.email && <Box sx={{ pb:4, pl: 1 }}>
+								<FormControlLabel
+									control={<Checkbox onChange={(event: React.ChangeEvent<HTMLInputElement>) => setReceiveEmails(event.target.checked)}
+										checked={receiveEmails}
+										inputProps={{ 'aria-label': 'controlled' }} />}
+									label="Receive e-mail notifications"
+								/>
+							</Box>}
+					</>)}
 
-						{<History spaceId={spaceId} entryId={entryId} />}
-					</>)}					
+					<Box sx={{ pb:4 }}>
+						{!notifyMessage && (
+							<Button disabled={!enableSubmit} onClick={() => handleSubmit()} startIcon={<SendRounded />} type="button" variant="contained" size="small" sx={{ mt: 2, mr: 5 }}>
+								{urgent ? "Translate immediately" : "Translate"}
+							</Button>
+						)}
+						{notifyMessage && (<>
+							<NotifyMessage notifyMessage={notifyMessage}/>								
+							<Box sx={{display:"flex", justifyContent:"center", pr:2}}>
+								<Button onClick={() => handleResetForm()} type="button" variant="contained" size="small" sx={{mt:2}}>Start new translation request</Button> 
+							</Box>
+						</>)}
+					</Box>
+					<History spaceId={spaceId} entryId={entryId} />
 				</Box>
 			</main>			
 		</>

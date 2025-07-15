@@ -26,35 +26,33 @@ import { appSessionCookies } from '@/auth';
 import { getTranslationstudioConfiguration } from '@/utils/serverSideProps'
 
 import { TSConfiguration } from "@/interfaces_types";
-
-import { useAutoHeight } from '@/hooks';
-
 import { NotifyMessage as NotifyMessageType } from '@/interfaces_types';
 import { requestCMSData } from '@/utils/storyblok'
-import { NotifyMessage, Loader } from "@/components/"
+import { NotifyMessage } from "@/components"
 
-import  {Button, Box, LinearProgress, TextField, Typography }  from '@mui/material'
+import { Button, Box, LinearProgress, TextField, Typography, Grid } from '@mui/material'
 import { ChevronBackIcon } from "@storyblok/mui";
 import StoryblokAppConfigration from "@/StoryblokAppConfiguration";
+import TranslationstudioLogo, { TranslationstudioLoading } from "@/utils/Logo";
+import { SaveRounded } from "@mui/icons-material";
+import { useAutoHeight } from "@/hooks";
 
-const Configuration = (props: {translationStudioConfiguration: TSConfiguration} & {accessToken: string, spaceId: string, userId: string, sbOwnerToken:string} & {setLocale: Function}) => {
+const Configuration = (props: { translationStudioConfiguration: TSConfiguration } & { accessToken: string, spaceId: string, userId: string, sbOwnerToken: string } & { setLocale: Function }) => {
 	const { push } = useRouter();
-	const userDisplayLanguageCode = "";
 
 	const [license, setLicense] = useState("");
 	const [licensePrev, setLicensePrev] = useState("");
-	const [licenseValid, setLicenseValid] = useState(props.translationStudioConfiguration.conf !== "")
+	const [licenseValid, setLicenseValid] = useState(false)
 	const [savingConfig, setSavingConfig] = useState<boolean>(false);
-	const [notifyMessages, setNotifyMessages] = useState<NotifyMessageType[]>([]);	
+	const [notifyMessages, setNotifyMessages] = useState<NotifyMessageType[]>([]);
 	const [loader, setLoader] = useState(false);
-	
+	const [pending, setPending] = useState(true);
+
 	/*
 		USE EFFECT
 	*/
 	useEffect(() => {
-		if (userDisplayLanguageCode !== "")
-			props.setLocale(userDisplayLanguageCode);	
-		
+
 		fetch("/api/translationstudio/props", {
 			method: "GET",
 			headers: {
@@ -62,129 +60,145 @@ const Configuration = (props: {translationStudioConfiguration: TSConfiguration} 
 				"X-spaceid": props.spaceId
 			}
 		})
-		.then(res => {
-			if (res.ok)
-				return res.json();
+			.then(res => {
+				if (res.ok)
+					return res.json();
 
-			throw new Error("Could not read configuration")
-		})
-		.then(licenseData => {
-			if (licenseData?.license)
-			{
-				setLicenseValid(true);
-				setLicense(licenseData.license);
-				setLicensePrev(licenseData.license);
-			}
-		})
-		.catch(console.warn);
-	}, [setLicense, setLicenseValid, setLicensePrev]);	
-	
+				throw new Error("Could not read configuration")
+			})
+			.then(licenseData => {
+				if (licenseData?.license !== "") {
+					setLicenseValid(true);
+					setLicense(licenseData.license);
+					setLicensePrev(licenseData.license);
+				}
+			})
+			.catch(console.warn)
+			.finally(() => setPending(false));
+	}, [setLicense, setLicenseValid, setLicensePrev, setPending]);
+
 	/*
 		FORM HANDLER
-	*/					
+	*/
 	const closeConfiguration = async () => {
-		setLoader(true);		
+		setLoader(true);
 		push('/home?spaceId=' + props.spaceId + '&userId=' + props.userId);
 	}
 	const saveValues = () => {
-		if ( !license || license === licensePrev) 
+		if (!license || license === licensePrev)
 			return;
 
+		setPending(true);
 		setSavingConfig(true);
+		setNotifyMessages([]);
 		fetch("/api/translationstudio/license", {
 			headers: {
 				"X-license": license,
 				"X-translationstudio": "storyblok"
 			}
 		})
-		.then((res) => {
-			if (!res.ok)
-				throw new Error("License is invalid");
-			
-			return fetch("/api/translationstudio/props", {
-				method: "POST",
-				headers: {
-					"X-spaceid": props.spaceId,
-					"X-translationstudio": "storyblok"
-				},
-				body: JSON.stringify({ license: license })
+			.then((res) => {
+				if (!res.ok)
+					throw new Error("License is invalid");
+
+				return fetch("/api/translationstudio/props", {
+					method: "POST",
+					headers: {
+						"X-spaceid": props.spaceId,
+						"X-translationstudio": "storyblok"
+					},
+					body: JSON.stringify({ license: license })
+				});
+			})
+			.then(res => {
+				if (res.ok)
+					return true;
+
+				return res.json();
+			})
+			.then(val => {
+				if (val === true)
+				{
+					setLicenseValid(true);
+					setLicensePrev(license);
+					setNotifyMessages([{ type: 'success', message: "License updated successfully" }]);
+				}
+				else if (typeof val.message === "string")
+					throw new Error(val.message)
+			})
+			.catch((e) => {
+				const msg = typeof e.message === "string" && e.message ? e.message : "Error by creating/updating of datasource entry";
+				setNotifyMessages([{ type: 'error', message: msg }]);
+			})
+			.finally(() => {
+				setSavingConfig(false)
+				setPending(false);
 			});
-		})
-		.then(res => {
-			if (res.ok)
-				return true;
-			
-			return res.json();
-		})
-		.then(val =>{
-			if (val === true)
-				setNotifyMessages([{type: 'info', withIcon: true, message: "Saved"}]);
-			else if (typeof val.message === "string")
-				throw new Error(val.message)
-		})
-		.catch((e) => {
-			console.error(e);
-			const msg = typeof e.message === "string" && e.message ? e.message : "Error by creating/updating of datasource entry";
-			setNotifyMessages([{type: 'error', withIcon: true, message: msg }]);
-		})
-		.finally(() => setSavingConfig(false));
 	}
 
-	/*
-		\\ FORM HANDLER
-	*/
-
 	useAutoHeight();
-
-    return (
-		<>			
+	
+	return (
+		<>
 			<Head>
 				<title>TranslationStudio plugin for Storyblok - Configuration</title>
 				<meta name="description" content="Plugin to handle translation requests from Storyblok CMS to TranslationStudio" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 			</Head>
-			<main>
-			{ loader  ?
-			 	<Loader /> 
-			:
-				<Box component="section">					
-					<Box sx={{ pb:2 }}>
-						{licenseValid && (<ChevronBackIcon onClick={() => { closeConfiguration(); }} sx={{position:'absolute', left: '0', cursor: 'pointer'}}/>)}
-						<Typography variant="h2" gutterBottom style={{ paddingLeft: licenseValid ? "30px" : "0"}}>{"Configuration"}</Typography>						
-					</Box>
-
-					<Box sx={{ pb:2 }}>						
-						<Box
-							component="form"
-							noValidate
-							autoComplete="off" 
-						>
-							<TextField 
-								required 
-								size='small' 
-								label={"translationstudio license"} 
-								variant="outlined" 
-								fullWidth
-								value={license} 
-								onChange={(event: React.ChangeEvent<HTMLInputElement>) => setLicense(event.target.value.trim())}
-							/>								
-						</Box>
-					</Box>
-
-					<Box sx={{ pb:2 }}>						
-						{notifyMessages.length > 0 && notifyMessages.map((item, idx) => <Box sx={{mt: 2}} key={"n" + idx}>
-								<NotifyMessage notifyMessage={item}/>
+			<main style={{ padding: "2em" }}>
+				<Grid container rowGap={2}>
+					{loader ?
+						<TranslationstudioLoading text="Loading license" />
+						:
+						<TranslationstudioLogo />
+					}
+					<Grid item xs={12} style={{ position: "relative" }}>
+						{licenseValid && (<ChevronBackIcon onClick={() => { closeConfiguration(); }} sx={{ position: 'absolute', left: '0', cursor: 'pointer' }} />)}
+						<Typography variant="h2" gutterBottom style={{ paddingLeft: licenseValid ? "30px" : "0" }}>{"Configuration"}</Typography>
+					</Grid>
+					<Grid item xs={12}>
+						<Box sx={{ pb: 2 }}>
+							<Box
+								component="form"
+								noValidate
+								autoComplete="off"
+							>
+								<TextField
+									required
+									label={"translationstudio license"}
+									placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+									fullWidth
+									variant="filled"
+									multiline
+									rows={3}
+									disabled={pending || loader}
+									value={license}
+									onChange={(event: React.ChangeEvent<HTMLInputElement>) => setLicense(event.target.value.trim())}
+								/>
 							</Box>
-						)}
-
-						<Box sx={{ mt:6}}>							
-							<Button disabled={!license || license === licensePrev || savingConfig} type="button" onClick={() => saveValues()} variant="contained" size="small">Save configuration</Button>
 						</Box>
 
-						{savingConfig && <Box sx={{ mt:6}}><LinearProgress /></Box>}
-					</Box>
-				</Box>
-			}
+						<Box sx={{ pb: 2 }}>
+							{notifyMessages.length > 0 && notifyMessages.map((item, idx) => <Box sx={{ mt: 2 }} key={"n" + idx}>
+								<NotifyMessage notifyMessage={item} />
+							</Box>
+							)}
+
+							<Box sx={{ mt: 6 }}>
+								<Button disabled={!license || license === licensePrev || savingConfig || loader } type="button"
+								 onClick={() => saveValues()} variant="contained" 
+								 size="small" startIcon={<SaveRounded />}>
+									{licensePrev === "" ? "Save license" : "Update license"}
+								</Button>
+							</Box>
+
+							{savingConfig && <Box sx={{ mt: 6 }}><LinearProgress /></Box>}
+						</Box>
+					</Grid>
+					<Grid item xs={12}>
+						<Typography variant="caption">If you do not yet have a license, please visit your account at <a href="https://account.translationstudio.tech" target="_blank">account.translationstudio.tech</a>. Additional information can be found at <a href="https://translationstudio.tech" target="_blank">translationstudio.tech</a>.</Typography>
+					</Grid>
+				</Grid>
 			</main>
 		</>
 	);
@@ -192,7 +206,7 @@ const Configuration = (props: {translationStudioConfiguration: TSConfiguration} 
 
 export default Configuration;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {		
+export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { query } = context;
 
 	if (!isAppSessionQuery(query)) {
@@ -213,12 +227,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { accessToken, spaceId, userId } = appSession;
 
 	// load space data
-	const space = await requestCMSData(accessToken, {key: 'GET_SPACE_INFO'});
+	const space = await requestCMSData(accessToken, { key: 'GET_SPACE_INFO' });
 
 	// load translationstudio configuration values form storyblock datasource
 	const translationStudioConfiguration = await getTranslationstudioConfiguration(spaceId, space.space.owner.access_token);
 
 	return {
-		props: {  translationStudioConfiguration, accessToken, spaceId, userId, sbOwnerToken: space.space.owner.access_token },
-	};	
+		props: { translationStudioConfiguration, accessToken, spaceId, userId, sbOwnerToken: space.space.owner.access_token },
+	};
 };

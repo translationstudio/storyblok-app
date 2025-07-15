@@ -21,6 +21,7 @@ import StoryblokAppConfigration from "@/StoryblokAppConfiguration";
 import { TranslationRequest, Translations } from "@/interfaces_types/translationstudio";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import Logger from "@/utils/Logger";
 
 type TranslationRequestTranslations = {
 	"source": string,
@@ -60,9 +61,9 @@ export async function POST(req:Request)
 {
     try
     {
-        const headersList = headers()
+        const headersList = await headers()
         const spaceid = headersList.get('X-spaceid') ?? "";
-        const spaceToken = GetSpaceAccessToen(spaceid);
+        const spaceToken = await GetSpaceAccessToen(spaceid);
         if (!spaceToken)
             return NextResponse.json({ message: "cannot obtain space token"}, { status: 400 }); 
 
@@ -107,7 +108,7 @@ export async function POST(req:Request)
     }
     catch (err:any)
     {
-        console.warn("Cannot obtain ts license",err.message ?? err);
+        Logger.warn("Cannot obtain ts license",err.message ?? err);
     }
 
     return NextResponse.json({ message: "Cannot submit translation request"}, { status: 500 });

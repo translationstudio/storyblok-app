@@ -17,7 +17,7 @@ along with this program; if not, see https://www.gnu.org/licenses/old-licenses/g
 */
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { History as HistoryType } from "@/interfaces_types/";
+import { History as HistoryType } from "@/interfaces_types";
 import { Box, Typography }  from '@mui/material'
 
 type HistoryProps = {
@@ -30,8 +30,55 @@ const dateToString = function(num:number)
     if (num === 0)
         return "";
 
-    const date = new Date(num);
-    return date.toLocaleString();
+    return new Date(num).toLocaleString();
+}
+
+const timeImportedIsMostRecent = function(item:HistoryType)
+{
+    return item['time-imported'] >= item['time-intranslation'] 
+        && item['time-imported'] >= item['time-requested'];
+}
+
+const timeInTranslationIsMostRecent = function(item:HistoryType)
+{
+    return item['time-intranslation'] >= item['time-imported'] 
+        && item['time-intranslation'] >= item['time-requested'];
+}
+
+const hasTimeExported = function(item:HistoryType)
+{
+    return item['time-requested'] > 0;
+}
+
+type TranslationStatus = {
+    time: number;
+    type: string;
+}
+
+const identfyStatus = function(item:HistoryType)
+{
+    const res:TranslationStatus = {
+        time: item['time-updated'],
+        type: "last updated on"
+    };
+
+    if (timeImportedIsMostRecent(item))
+    {
+        res.time = item['time-imported'];
+        res.type = "translation imported on";
+    }
+    else if (timeInTranslationIsMostRecent(item))
+    {
+        res.time = item['time-intranslation'];
+        res.type = "in translation since";
+    }
+    else if (hasTimeExported(item))
+    {
+        res.time = item['time-requested'];
+        res.type = "queued for translation on";
+    }
+
+    return res;
 }
 
 const DisplayHistory = function( { history }: { history:HistoryType[] })
@@ -40,15 +87,14 @@ const DisplayHistory = function( { history }: { history:HistoryType[] })
         return <></>;
     
     return <>
-        {history.map((item, idx) => { 									                            
-            const additionalInfo =	  item["time-translated"]    != 0   ? "translated on " + dateToString(item["time-translated"])
-                                    : item["time-intranslation"] != 0   ? "in translation since " + dateToString(item["time-intranslation"])
-                                    : item["time-export"]        != 0   ? "data exported on " + dateToString(item["time-export"])
-                                    : item["time-insert"]        != 0   ? "translation job added on " + dateToString(item["time-insert"])
-                                    : "unknown status";
+        {history.map((item, idx) => { 	
+            const status = identfyStatus(item);								                            
+            const date = dateToString(status.time);
+            if (date === "")
+                return <React.Fragment key={"history-entry"+idx} />;
 
             return <Typography key={"history-entry"+idx} variant="body1" gutterBottom>
-                        {item["element"]} {additionalInfo}													
+                        {item['target-language']} - {status.type} {date}
                 </Typography> 
                                             
         })}
@@ -82,7 +128,7 @@ const History = ( {spaceId, entryId }:HistoryProps ) => {
     }
 
     return <Box sx={{pb:4, pt: 2}}>
-        <Typography variant="subtitle1" gutterBottom>Tranlsation history</Typography>
+        <Typography variant="subtitle1" gutterBottom className='translation-caption'>Tranlsation history</Typography>
         <DisplayHistory history={history} />						
     </Box>;
 }
