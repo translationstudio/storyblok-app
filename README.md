@@ -9,6 +9,12 @@ This plugin allows you to add enterprise translation management to your Stroyblo
 
 This extension connects translationstudio to your Storyblok spaces. It connects to the translationstudio gateway `https://storyblok.translationstudio.tech` and, thereby, keeps all business logic separate. Consequently, this extension only adds necessary UI elements and features to Storyblok.
 
+![translationstudio extension](readme-data/extension.png)
+
+## Available Connectors
+
+The list of available translation connectors is growing constantly. You can find the full list at https://translationstudio.tech
+
 ## Adding this extension to your Storyblok spaces
 
 > [!IMPORTANT]
