@@ -1,5 +1,5 @@
 services:
-  storyblokappui:
+  storyblokappui-qa:
     extends:
       file: docker-compose.yml
       service: storyblokappuibase

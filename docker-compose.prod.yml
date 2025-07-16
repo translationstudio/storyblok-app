@@ -1,5 +1,5 @@
 services:
-  storyblokappui:
+  storyblokappui-production:
     extends:
       file: docker-compose.yml
       service: storyblokappuibase
