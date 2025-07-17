@@ -38,7 +38,7 @@ RUN npm run build
 #
 # Finally, remove dev dependencies
 #
-RUN npm prune --production
+#RUN npm prune --production
 
 RUN chown -R ${USERNAME}:${GROUPNAME} /app && chmod -R 755 /app
 
