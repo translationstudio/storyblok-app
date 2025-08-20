@@ -15,6 +15,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
+import { TranslationstudioLogoSmall } from '@/utils/Logo';
+import { Grid, Typography } from '@mui/material';
 import { useEffect } from 'react';
 
 export default function Error401() {
@@ -25,5 +27,13 @@ export default function Error401() {
 		}
 	}, []);
 
-	return <span>You are unauthorized</span>;
+	return <main style={{ padding: "2em" }}>
+				<Grid container rowGap={0} columnGap={2}>
+					<TranslationstudioLogoSmall />
+
+					<Grid item xs={12} textAlign={"center"}>
+						<Typography variant="h2">You are unauthorized. Probably, you web app configuration does not match the required oauth configuration.</Typography>
+					</Grid>
+				</Grid>
+			</main>
 }
