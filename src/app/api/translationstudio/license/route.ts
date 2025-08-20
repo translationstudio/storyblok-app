@@ -47,7 +47,7 @@ export async function GET()
     }
     catch (err:any)
     {
-        Logger.warn(err.message ?? err);
+        Logger.warn((err.message ?? err) + " - " + URL);
     }
 
     return NextResponse.json({ message: "cannot validate license"}, { status: 500 });
