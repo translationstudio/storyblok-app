@@ -203,7 +203,14 @@ const Home = (props: HomeProps) => {
 	if (props.tsLanguageMappings.length === 0)
 	{
 		return <main>
-			<NotifyMessage notifyMessage={{ message: "translationstudio has not been setup yet.", type: "warning"}} />
+			<Box component="section" sx={{ }}>
+				<Box sx={{ pb:2 }}>							
+					<SettingsIcon onClick={() => { handleSettings(); }} sx={{position:'absolute', right: '5px', cursor: 'pointer'}}/>
+				</Box>
+				<Box>
+					<NotifyMessage notifyMessage={{ message: "translationstudio has not been setup yet.", type: "warning"}} />
+				</Box>
+			</Box>
 		</main>
 	}
 
