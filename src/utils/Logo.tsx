@@ -9,6 +9,13 @@ export default function TranslationstudioLogo()
     
 }
 
+export function TranslationstudioLogoSmall()
+{
+    return <Grid item xs={12} textAlign={"center"} style={{ paddingBottom: "4em"}}>
+            <img className="translationstudiologo" src={TSLOGO} alt="" style={{ width: "100%", maxHeight: "50px", height: "100%"}}/>
+        </Grid>
+}
+
 export function TranslationstudioLoading(props: { text: string})
 {
     return <Grid container rowGap={2}>
