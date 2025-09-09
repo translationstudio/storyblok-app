@@ -12,7 +12,8 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --omit=dev > bom-original.json"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
