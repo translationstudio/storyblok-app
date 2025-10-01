@@ -15,6 +15,7 @@ services:
       - ./data:/app/data 
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    restart: always
     ports:
       - "${SERVER_IP}:8016:8081"
     environment:
