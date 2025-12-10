@@ -1,0 +1,7 @@
+services:
+  storyblokappui-qa:
+    extends:
+      file: docker-compose.yml
+      service: storyblokappuibase
+      networks:
+        - saas-qa

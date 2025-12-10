@@ -67,7 +67,8 @@ export async function GET(request: NextRequest)
     catch (err:any)
     {
         Logger.warn(err.message ?? err);
+        const message = "Could not fetch history. Reason is " + (err.message ?? "unknown");
+
+        return NextResponse.json({ message: message}, { status: 500 });
     }
-    
-    return NextResponse.json({ message: "Could not fetc history"}, { status: 500 });
 }

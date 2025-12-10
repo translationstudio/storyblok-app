@@ -1,0 +1,39 @@
+services:
+  storyblokappuibase:
+    env_file: .env
+    build: 
+      context: .
+      args:
+        UID: ${SERVICE_USERANDGROUP_ID}
+        GID: ${SERVICE_USERANDGROUP_ID}
+        USERNAME: ${SERVICE_USERANDGROUP_NAME}
+        GROUPNAME: ${SERVICE_USERANDGROUP_NAME}
+        SERVICE_REPO_GROUP: ${SERVICE_REPO_GROUP}
+    image: registry-git2.intentive.de/i-d-media/translationstudio-saas/${SERVICE_REPO_GROUP}/${SERVICE_REPO_DIRECTORY}:${BUILD_TAG}
+    volumes:
+      - ./log:/app/log
+      - ./data:/app/data 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+    ports:
+      - "${SERVER_IP}:8016:8081"
+    environment:
+      PORT: 8081
+      EXTENSION_URL: ${EXTENSION_URL}
+      NEXT_PUBLIC_EXTENSION_APP_ID: ${NEXT_PUBLIC_EXTENSION_APP_ID}
+      EXTENSION_CLIENT_ID: ${EXTENSION_CLIENT_ID}
+      EXTENSION_CLIENT_SECRET: ${EXTENSION_CLIENT_SECRET}
+      NEXT_PUBLIC_EXTENSION_SLUG: ${NEXT_PUBLIC_EXTENSION_SLUG}
+      TRANSLATIONSTUDIO_URL: ${TRANSLATIONSTUDIO_URL}
+
+networks:
+  saas-prod:
+    name: saas-prod
+    external: true
+  saas-qa:
+    name: saas-qa
+    external: true
+  saas-dev:
+    name: saas-dev
+    external: true

@@ -22,6 +22,32 @@ export function GetAppId()
     return StoryblokAppConfigration.EXTENSION_APP_ID;
 }
 
+function checkLicense(license:any)
+{
+    if (typeof license !== "string" || license === "")
+        return false;
+
+    const parts = license.split(".");
+    if (parts.length !== 3)
+        return false;
+
+    try
+    {
+        const text = Buffer.from(parts[1], "base64url").toString("utf-8");
+        const sub:string = JSON.parse(text)?.sub ?? "";
+        if (!sub.includes("storyblok"))
+            throw new Error("License is not issued for storyblok");
+
+        return true;
+    }
+    catch (err)
+    {
+        console.error(err);
+    }
+
+    return false;
+}
+
 export default async function GetAppInformation(spaceid:string, token:string)
 {
     const appid = GetAppId();
@@ -38,16 +64,16 @@ export default async function GetAppInformation(spaceid:string, token:string)
         }
     });
 
-    if (res.status === 200)
+    if (res.status !== 200)
+        return null;
+
+    const json = await res.json();
+    if (json.app_provision?.slug && checkLicense(json.app_provision?.space_level_settings?.license))
     {
-        const json = await res.json();
-        if (json.app_provision?.slug && json.app_provision?.space_level_settings?.license)
-        {
-            return {
-                slug: json.app_provision.slug,
-                id: json.app_provision.app_id,
-                license: json.app_provision.space_level_settings.license,
-            }
+        return {
+            slug: json.app_provision.slug,
+            id: json.app_provision.app_id,
+            license: json.app_provision.space_level_settings.license,
         }
     }
 

@@ -15,6 +15,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, see https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
+import { useAutoHeight } from '@/hooks';
+import { Alert } from '@mui/material';
 import { useEffect } from 'react';
 
 export default function Error401() {
@@ -25,5 +27,8 @@ export default function Error401() {
 		}
 	}, []);
 
-	return <span>You are unauthorized</span>;
+	useAutoHeight();
+	return <main style={{ padding: "2em" }}>
+				<Alert severity='warning'>We cannot authorize you. This might be related with your cookie settings! Make sure you accept 3rd party cookies (even from unvisited sites).</Alert>
+			</main>
 }

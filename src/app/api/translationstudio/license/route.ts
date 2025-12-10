@@ -22,6 +22,8 @@ import { NextResponse } from "next/server";
 
 export async function GET()
 {
+    const URL = StoryblokAppConfigration.URL + "/translationstudio/authorize"
+
     try
     {
         const headersList = await headers();
@@ -30,7 +32,8 @@ export async function GET()
         if (!license)
             return NextResponse.json({ message: "license is invalid"}, { status: 400 }); 
 
-        const res = await fetch(StoryblokAppConfigration.URL + "/translationstudio/authorize", {
+        const res = await fetch(URL, {
+            cache: "no-cache",
             method: "GET",
             headers: {
                 "X-license": license
@@ -39,10 +42,12 @@ export async function GET()
 
         if (res.ok)
             return new NextResponse(null, { status: 204 });
+
+        Logger.warn("License validation failed: " + res.status);
     }
     catch (err:any)
     {
-        Logger.warn(err.message ?? err);
+        Logger.warn((err.message ?? err) + " - " + URL);
     }
 
     return NextResponse.json({ message: "cannot validate license"}, { status: 500 });
