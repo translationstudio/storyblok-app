@@ -25,8 +25,8 @@
     "@storyblok/mui": "0.2.0",
     "dayjs": "1.11.13",
     "next": "15.5.9",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "typescript": "5.9.2",
     "winston": "3.19.0"
   },
