@@ -122,9 +122,7 @@ const History = ( {spaceId, entryId }:HistoryProps ) => {
 
     if (history.length === 0)
     {
-        return <Box sx={{pb:4, pt: 2}}>
-            <Typography variant="body1" gutterBottom>This entry has not been translated, yet.</Typography>
-        </Box>
+        return <></>
     }
 
     return <Box sx={{pb:4, pt: 2}}>
